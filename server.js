@@ -64,6 +64,70 @@ app.get('/', (req, res) => {
     })
 })
 
+app.post('/signup', async (req, res) => {
+
+    const result = await db_query.createUser({
+        username: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+    });
+    res.json(result)
+})
+
+app.post('/login', async (req, res) => {
+    const result = await db_query.getUser({username: req.body.username});
+
+    if (result.user === undefined){
+        res.json({success: false, message: "There is no user with that username..."})
+    }
+    
+    const userResult = result.user;
+
+    if(userResult.password === req.body.password){
+        req.session.user_id = userResult.user_id;
+        req.session.username = userResult.username;
+        req.session.email = userResult.email;
+        let sessionID = req.sessionID;
+        req.sessionStore.set(sessionID, req.session);
+        res.json({
+            success: true,
+            sessionID: sessionID
+        })
+    }else{
+        res.json({success: false, message: "The password does not match..."})
+    }
+    
+})
+
+app.post('/logoutUser', async (req, res) => {
+    req.sessionStore.destroy(req.body.sessionID, (err, session) => {
+        if (err) {
+            res.json({
+                success: false,
+            })
+        } else {
+            console.log("session destroyed.")
+            res.json({
+                success: true,
+            })
+        }
+    })
+})
+
+app.post('/authenticate', async (req, res) => {
+    req.sessionStore.get(req.body.sessionID, (err, session) => {
+        if (err || session === undefined) {
+            res.json({
+                success: false,
+            })
+        } else {
+            res.json({
+                success: true,
+            })
+        }
+    })
+})
+
 //API routes
 
 connectDB().then(() => {
