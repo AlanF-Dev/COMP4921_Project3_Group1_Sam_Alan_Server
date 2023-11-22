@@ -29,8 +29,6 @@ const connectDB = async () => {
     }
 }
 
-
-
 // Middleware
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
@@ -132,9 +130,15 @@ app.post('/authenticate', async (req, res) => {
 //API routes
 
 app.post('/findUsers', async(req, res) => {
-
-    const result = await db_query.findUsers({search: `${req.body.search}%`})
-    res.json({result: result})
+    req.sessionStore.get(req.body.session, async (err, session) => {
+        if (err || session === undefined || session === null) {
+            const result = [];
+            res.json({result: result});
+        } else {
+            const result = await db_query.findUsers({search: `${req.body.search}%`, username: session.username});
+            res.json({result: result});
+        }
+    })
 })
 
 

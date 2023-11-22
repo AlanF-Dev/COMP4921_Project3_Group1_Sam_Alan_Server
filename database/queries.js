@@ -41,10 +41,10 @@ const findUsers = async(data) => {
     let sql = `
         SELECT *
         FROM user
-        WHERE username LIKE (?);
+        WHERE username LIKE (?) AND username <> (?);
     `
 
-    let param = [data.search];
+    let param = [data.search, data.username];
 
     try{
         const result = await database.query(sql, param);
