@@ -92,7 +92,7 @@ app.post('/login', async (req, res) => {
         req.sessionStore.set(sessionID, req.session);
         res.json({
             success: true,
-            sessionID: sessionID
+            session: sessionID
         })
     }else{
         res.json({success: false, message: "The password and username does not match..."})
@@ -100,8 +100,8 @@ app.post('/login', async (req, res) => {
     
 })
 
-app.post('/logoutUser', async (req, res) => {
-    req.sessionStore.destroy(req.body.sessionID, (err, session) => {
+app.post('/logout', async (req, res) => {
+    req.sessionStore.destroy(req.body.session, (err, session) => {
         if (err) {
             res.json({
                 success: false,
@@ -116,8 +116,8 @@ app.post('/logoutUser', async (req, res) => {
 })
 
 app.post('/authenticate', async (req, res) => {
-    req.sessionStore.get(req.body.sessionID, (err, session) => {
-        if (err || session === undefined) {
+    req.sessionStore.get(req.body.session, (err, session) => {
+        if (err || session === undefined || session === null) {
             res.json({
                 success: false,
             })
