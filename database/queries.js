@@ -1,5 +1,3 @@
-const database = require('./databaseConnection');
-
 const database = require('../databaseConnection');
 
 const createUser = async(data) => {
@@ -39,6 +37,23 @@ const getUser = async(data) => {
     }
 }
 
+const findUsers = async(data) => {
+    let sql = `
+        SELECT *
+        FROM user
+        WHERE username LIKE (?);
+    `
+
+    let param = [data.search];
+
+    try{
+        const result = await database.query(sql, param);
+        return result[0];
+    }catch(err){
+        console.log(err);
+    }
+}
+
 module.exports = {
-    createUser, getUser
+    createUser, getUser, findUsers
 }

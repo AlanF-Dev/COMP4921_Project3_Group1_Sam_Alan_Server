@@ -71,6 +71,7 @@ app.post('/signup', async (req, res) => {
         email: req.body.email,
         password: req.body.password
     });
+
     res.json(result)
 })
 
@@ -94,7 +95,7 @@ app.post('/login', async (req, res) => {
             sessionID: sessionID
         })
     }else{
-        res.json({success: false, message: "The password does not match..."})
+        res.json({success: false, message: "The password and username does not match..."})
     }
     
 })
@@ -129,6 +130,13 @@ app.post('/authenticate', async (req, res) => {
 })
 
 //API routes
+
+app.post('/findUsers', async(req, res) => {
+
+    const result = await db_query.findUsers({search: `${req.body.search}%`})
+    res.json({result: result})
+})
+
 
 connectDB().then(() => {
     app.listen(PORT, () => {
