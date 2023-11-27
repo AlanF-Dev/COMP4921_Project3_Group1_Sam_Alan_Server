@@ -18,6 +18,9 @@ const PORT = 3000;
 const saltRounds = 12;
 const app = express();
 
+//Routes
+const friendRoute = require('./routes/friends')
+
 
 const connectDB = async () => {
     try{
@@ -30,6 +33,7 @@ const connectDB = async () => {
 }
 
 // Middleware
+app.use('/friends', friendRoute)
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
