@@ -54,65 +54,6 @@ const findUsers = async(data) => {
     }
 }
 
-//friend request queries
-const getStatus = async(data) => {
-    let sql = `
-        SELECT *
-        FROM friends
-        WHERE (requester_id = (?)
-        AND receiver_id = (?))
-        OR (requester_id = (?)
-        AND receiver_id = (?));
-    `
-
-    let param = [data.requester, data.receiver, data.receiver, data.requester];
-
-    try{
-        const result = await database.query(sql, param);
-        return result[0][0];
-    }catch(err){
-        console.log(err);
-    }
-}
-
-const sendRequest = async(data) => {
-    let sql = `
-        INSERT INTO friends
-        (requester_id, receiver_id, friends)
-        VALUES
-        (?, ?, ?);
-    `
-
-    let param = [data.requester, data.receiver, false];
-
-    try{
-        const result = await database.query(sql, param);
-        return result[0];
-    }catch(err){
-        console.log(err);
-    }
-}
-
-const acceptRequest = async(data) => {
-    let sql = `
-        UPDATE friends
-        SET friends = true
-        WHERE (requester_id = (?)
-        AND receiver_id = (?))
-        OR (requester_id = (?)
-        AND receiver_id = (?));
-    `
-
-    let param = [data.requester, data.receiver, data.receiver, data.requester];
-
-    try{
-        const result = await database.query(sql, param);
-        return result[0];
-    }catch(err){
-        console.log(err);
-    }
-}
-
 module.exports = {
-    createUser, getUser, findUsers, sendRequest, getStatus, acceptRequest
+    createUser, getUser, findUsers
 }

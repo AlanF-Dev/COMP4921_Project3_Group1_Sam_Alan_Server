@@ -149,68 +149,6 @@ app.post('/findUsers', async(req, res) => {
     })
 })
 
-app.post('/getStatus', async(req, res) => {
-    req.sessionStore.get(req.body.session, async(err, session) => {
-        if (err || session === undefined || session === null) {
-            res.json({success: false});
-        } else {
-            const result = await db_query.getStatus({requester: session.user_id, receiver: req.body.userid});
-            if (result === undefined || result.friends === undefined || result.requester_id === undefined || result.receiver_id === undefined) {
-                res.json({success: true, status: 0})
-            } else {
-                if (result.friends == 0) {
-                    if (result.requester_id == session.user_id) {
-                        res.json({success: true, status: 1});
-                    } else if (result.receiver_id == session.user_id) {
-                        res.json({success: true, status: 2});
-                    }
-                } else if (result.friends == 1) {
-                    res.json({success: true, status: 3});
-                } else {
-                    res.json({success: false});
-                }
-            }
-            
-        }
-    })
-})
-
-app.post('/sendRequest', async(req, res) => {
-    req.sessionStore.get(req.body.session, async(err, session) => {
-        if (err || session === undefined || session === null) {
-            res.json({success: false});
-        } else {
-            const result = await db_query.sendRequest({requester: session.user_id, receiver: req.body.userid});
-            res.json({success: true});
-        }
-    })
-})
-
-app.post('/acceptRequest', async(req, res) => {
-    req.sessionStore.get(req.body.session, async(err, session) => {
-        if (err || session === undefined || session === null) {
-            res.json({success: false});
-        } else {
-            const result = await db_query.acceptRequest({requester: session.user_id, receiver: req.body.userid});
-            res.json({success: true});
-        }
-    })
-})
-
-app.post('/getUserID', async(req, res) => {
-    req.sessionStore.get(req.body.session, async(err, session) => {
-        if(err || session === undefined || session === null){
-            res.json({success: false});
-        } else {
-            console.log(session.user_pic)
-            res.json({
-                user_pic: session.user_pic
-            })
-        }
-    })
-})
-
-
 connectDB().then(() => {
     app.listen(PORT, () => {
         console.log(`APP LISTENING ON PORT: ${PORT}`)
