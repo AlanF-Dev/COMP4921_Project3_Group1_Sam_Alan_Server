@@ -21,7 +21,7 @@ const createUser = async(data) => {
 
 const getUser = async(data) => {
     let getUserSQL = `
-        SELECT user_id, username, email, password
+        SELECT user_id, username, email, password, user_pic
         FROM user
         WHERE username = (?);
     `;

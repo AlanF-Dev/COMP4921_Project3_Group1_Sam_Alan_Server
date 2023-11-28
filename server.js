@@ -19,7 +19,11 @@ const saltRounds = 12;
 const app = express();
 
 //Routes
-const friendRoute = require('./routes/friends')
+const friendRoute = require('./routes/friends');
+const groupRoute = require('./routes/group');
+
+app.use('/friends', friendRoute);
+app.use('/group', groupRoute);
 
 
 const connectDB = async () => {
@@ -33,7 +37,6 @@ const connectDB = async () => {
 }
 
 // Middleware
-app.use('/friends', friendRoute)
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.json());
@@ -90,6 +93,7 @@ app.post('/login', async (req, res) => {
         req.session.user_id = userResult.user_id;
         req.session.username = userResult.username;
         req.session.email = userResult.email;
+        req.session.user_pic = userResult.user_pic;
         let sessionID = req.sessionID;
         req.sessionStore.set(sessionID, req.session);
         res.json({
@@ -189,6 +193,19 @@ app.post('/acceptRequest', async(req, res) => {
         } else {
             const result = await db_query.acceptRequest({requester: session.user_id, receiver: req.body.userid});
             res.json({success: true});
+        }
+    })
+})
+
+app.post('/getUserID', async(req, res) => {
+    req.sessionStore.get(req.body.session, async(err, session) => {
+        if(err || session === undefined || session === null){
+            res.json({success: false});
+        } else {
+            console.log(session.user_pic)
+            res.json({
+                user_pic: session.user_pic
+            })
         }
     })
 })

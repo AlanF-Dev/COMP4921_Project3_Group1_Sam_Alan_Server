@@ -2,7 +2,7 @@ const database = require('../databaseConnection');
 
 const getAllFriends = async(data) => {
     let sql = `
-        SELECT user_id, username
+        SELECT DISTINCT user_id, username, user_pic
         FROM friends f
         INNER JOIN user u
         ON IF(f.requester_id = (?), f.receiver_id = u.user_id, f.requester_id = u.user_id)
