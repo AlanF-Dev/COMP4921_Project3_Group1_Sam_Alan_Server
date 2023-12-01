@@ -51,6 +51,23 @@ const getAllGroups = async(data) => {
     }
 }
 
+const getAllMembers = async(data) => {
+    let sql = `
+        SELECT COUNT(*) AS totalMembers
+        FROM group_members
+        WHERE frn_group_id = (?);
+    `
+
+    param = [data.group_id]
+
+    try{
+        const result = await database.query(sql, param)
+        return result[0][0].totalMembers
+    } catch (err) {
+        console.log(err);
+    }
+}
+
 module.exports = {
-    createGroup, enterGroup, getAllGroups
+    createGroup, enterGroup, getAllGroups, getAllMembers
 }

@@ -50,6 +50,7 @@ router.post('/createGroup', async(req, res) => {
                     user_id: num
                 })
             })
+            res.json({success: true})
         }
     })
 
@@ -65,9 +66,27 @@ router.post('/getAllGroups', async(req, res) => {
             res.send({success: false})
         } else {
             const result = await groupDB.getAllGroups({user_id: session.user_id});
-            console.log(result);
             res.json({
                 allGroups: result
+            })
+        }
+    })
+})
+
+router.post('/getAllMembers', async(req, res) => {
+    if(req.body.session == undefined){
+        res.send({success:false})
+    }
+
+    req.sessionStore.get(req.body.session, async(err, session) => {
+        if(err || session === undefined || session === null){
+            res.send({success: false})
+        } else {
+            const result = await groupDB.getAllMembers({
+                group_id: req.body.group_id
+            })
+            res.json({
+                allMembers: result
             })
         }
     })

@@ -21,9 +21,11 @@ const app = express();
 //Routes
 const friendRoute = require('./routes/friends');
 const groupRoute = require('./routes/group');
+const eventRoute = require('./routes/events');
 
 app.use('/friends', friendRoute);
 app.use('/group', groupRoute);
+app.use('/event', eventRoute);
 
 
 const connectDB = async () => {
