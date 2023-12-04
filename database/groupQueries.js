@@ -68,6 +68,48 @@ const getAllMembers = async(data) => {
     }
 }
 
+const getGroupName = async(data) => {
+    const sql = `
+        SELECT name 
+        FROM friendgroup
+        WHERE group_id = (?);
+    `
+
+    const param = [data.group_id];
+
+    try{
+        const result = await database.query(sql, param)
+        return result[0][0].name
+    } catch(err){
+        console.log(err)
+    }
+}
+
+const deleteGroup = async(data) => {
+    const sql = `
+        DELETE FROM group_members
+        WHERE frn_group_id = (?);
+    `
+    const sql2= `
+        DELETE FROM friendgroup
+        WHERE group_id = (?);
+    `
+
+    const param = [data.group_id]
+
+    try{
+        await database.query(sql, param);
+        await database.query(sql2, param)
+        return true
+    } catch (err) {
+        console.log(err)
+        return false
+    }
+
+}
+
 module.exports = {
-    createGroup, enterGroup, getAllGroups, getAllMembers
+    createGroup, enterGroup, 
+    getAllGroups, getAllMembers, 
+    getGroupName, deleteGroup
 }

@@ -92,4 +92,18 @@ router.post('/getAllMembers', async(req, res) => {
     })
 })
 
+router.delete('/deleteGroup/:group_id', async(req, res) => {
+    const result = await groupDB.deleteGroup({group_id: req.params.group_id})
+    res.json({
+        success: result
+    })
+})
+
+router.get('/getName/:group_id', async(req, res) => {
+    const result = await groupDB.getGroupName({group_id: req.params.group_id})
+    res.json({
+        name: result
+    })
+})
+
 module.exports = router;
