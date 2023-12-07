@@ -53,7 +53,10 @@ router.post('/create', async(req, res) => {
 
         const title = req.body.title;
         const description = req.body.description;
-        const date = (req.body.date.split('T')[0]);
+        // const date = (req.body.date.split('T')[0]);
+        const bodyDate = new Date(req.body.date);
+        bodyDate.setMinutes(bodyDate.getMinutes() - bodyDate.getTimezoneOffset())
+        const date = (bodyDate.toISOString().split('T')[0]);
         const startTime =`${date} ${req.body.startTime}:00`;
         const endTime = `${date} ${req.body.endTime}:00`;
 
