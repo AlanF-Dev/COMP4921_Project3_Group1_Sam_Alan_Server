@@ -11,10 +11,13 @@ const expireTime = 60 * 60 * 1000;
 //database
 const friendsDB = require("../database/friendsQueries");
 
-router.use(cors({
+const corsOption = {
     origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
-}))
+    credentials:true,
+    optionSuccessStatus: 200,
+};
+
+router.use(cors(corsOption))
 
 router.use(bodyParser.urlencoded({extended: true}))
 router.use(express.json())
