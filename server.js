@@ -14,7 +14,7 @@ const expireTime = 60 * 60 * 1000;
 // Import query and functions
 const db_query = require('./database/queries');                         // db used for user queries
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 const saltRounds = 12;
 const app = express();
 
