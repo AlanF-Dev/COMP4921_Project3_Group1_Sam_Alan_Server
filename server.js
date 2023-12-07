@@ -151,6 +151,18 @@ app.post('/findUsers', async(req, res) => {
     })
 })
 
+app.post('/profile', async(req, res) => {
+    req.sessionStore.get(req.body.session, async (err, session) => {
+        if (err || session === undefined || session === null) {
+            res.json({success: false});
+        } else {
+            const result = await db_query.getCurrentUser({user_id: session.user_id});
+            console.log(result);
+            res.json({result: result.user, success: result.success});
+        }
+    })
+})
+
 connectDB().then(() => {
     app.listen(PORT, () => {
         console.log(`APP LISTENING ON PORT: ${PORT}`)

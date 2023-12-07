@@ -57,6 +57,26 @@ router.post('/getAll', async (req, res) => {
     })
 })
 
+router.post('/requests', async (req, res) => {
+    if(req.body.session == undefined){
+        res.send({success: false})
+    }
+    
+    req.sessionStore.get(req.body.session, async(err, session) => {
+        if(err || session === undefined || session === null){
+            res.json({
+                success: false
+            })
+        } else {
+            const user_id = session.user_id;
+            const result = await friendsDB.getRequests({user_id: user_id})
+            res.json({
+                requests: result
+            })
+        }
+    })
+})
+
 router.post('/getStatus', async(req, res) => {
     req.sessionStore.get(req.body.session, async(err, session) => {
         if (err || session === undefined || session === null) {

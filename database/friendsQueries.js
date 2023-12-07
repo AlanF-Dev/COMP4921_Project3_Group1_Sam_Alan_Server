@@ -3,13 +3,48 @@ const database = require('../databaseConnection');
 const getAllFriends = async(data) => {
     let sql = `
         SELECT DISTINCT user_id, username, user_pic
+        FROM (SELECT DISTINCT *
         FROM friends f
         INNER JOIN user u
-        ON IF(f.requester_id = (?), f.receiver_id = u.user_id, f.requester_id = u.user_id)
-        WHERE friends = 1;
+        ON f.requester_id = u.user_id
+        UNION
+        SELECT DISTINCT *
+        FROM friends f
+        INNER JOIN user u
+        ON f.receiver_id = u.user_id) as f
+        WHERE (requester_id = (?) OR receiver_id = (?))
+        AND friends = 1
+        AND user_id <> (?);
     `;
 
-    let param = [data.user_id];
+    let param = [data.user_id, data.user_id, data.user_id];
+
+    try{
+        const result = await database.query(sql, param);
+        return result[0];
+    }catch(err){
+        console.log(err);
+    }
+}
+
+const getRequests = async(data) => {
+    let sql = `
+        SELECT DISTINCT user_id, username, user_pic
+        FROM (SELECT DISTINCT *
+        FROM friends f
+        INNER JOIN user u
+        ON f.requester_id = u.user_id
+        UNION
+        SELECT DISTINCT *
+        FROM friends f
+        INNER JOIN user u
+        ON f.receiver_id = u.user_id) as f
+        WHERE (requester_id = (?) OR receiver_id = (?))
+        AND friends = 0
+        AND user_id <> (?);
+    `;
+
+    let param = [data.user_id, data.user_id, data.user_id];
 
     try{
         const result = await database.query(sql, param);
@@ -99,5 +134,5 @@ const removeFriend = async(data) => {
 }
 
 module.exports = {
-    getAllFriends, sendRequest, getStatus, acceptRequest, removeFriend
+    getAllFriends, getRequests, sendRequest, getStatus, acceptRequest, removeFriend
 }

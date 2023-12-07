@@ -37,6 +37,23 @@ const getUser = async(data) => {
     }
 }
 
+const getCurrentUser = async(data) => {
+    let getUserSQL = `
+        SELECT user_id, username, email, user_pic
+        FROM user
+        WHERE user_id = (?);
+    `;
+
+    let param = [data.user_id];
+    try{
+        const results = await database.query(getUserSQL, param);
+        return {user: results[0][0], success: true};
+    }
+    catch(e){
+        return {success: false}
+    }
+}
+
 const findUsers = async(data) => {
     let sql = `
         SELECT *
@@ -55,5 +72,5 @@ const findUsers = async(data) => {
 }
 
 module.exports = {
-    createUser, getUser, findUsers
+    createUser, getUser, getCurrentUser, findUsers
 }
