@@ -33,6 +33,22 @@ const getAllEvents = async(data) => {
     }
 }
 
+const getAllEventsForToday = async(data) => {
+    const sql = `
+        SELECT * FROM events
+        WHERE date = (?) AND deletedDate IS NULL;
+    `
+
+    const param = [data.date];
+
+    try{
+        const result = await database.query(sql, param);
+        return result[0]
+    }catch (err) {
+        console.log(err)
+    }
+}
+
 const getAllRecycledEvents = async(data) => {
     const sql = `
         SELECT * FROM events
@@ -67,6 +83,24 @@ const recycleEvent = async(data) => {
     }
 }
 
+const restoreEvent = async(data) => {
+    const sql = `
+        UPDATE events
+        SET deletedDate = NULL
+        WHERE event_id = (?);
+    `
+
+    const param = [data.event_id]
+
+    try{
+        await database.query(sql, param);
+        return true
+    } catch (err) {
+        console.log(err)
+        return false
+    }
+}
+
 const deleteEvent = async(data) => {
     const sql = `
         DELETE FROM events
@@ -86,5 +120,6 @@ const deleteEvent = async(data) => {
 module.exports = {
     createEvent, getAllEvents, 
     deleteEvent, getAllRecycledEvents,
-    recycleEvent
+    recycleEvent, restoreEvent,
+    getAllEventsForToday
 }

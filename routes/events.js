@@ -136,6 +136,27 @@ router.patch('/recycleEvent/:event_id', async(req, res) => {
     })
 })
 
+router.patch('/restoreEvent/:event_id', async(req, res) => {
+
+    const result = await eventsDB.restoreEvent({
+        event_id: parseInt(req.params.event_id)
+    })
+
+    res.json({
+        success: result
+    })
+})
+
+router.get('/getAllPlanEvents', async(req, res) => {
+    const date = new Date()
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset())
+    
+    const result = await eventsDB.getAllEventsForToday({date: date.toISOString().split('T')[0]})
+    res.json({
+        result: result
+    })
+})
+
 router.delete('/deleteEvent/:event_id', async(req, res) => {
     console.log(req.params.event_id)
     // req.sessionStore.get(req.body.session, async(err, session) => {
